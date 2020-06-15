@@ -1,0 +1,62 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+
+    // Apply the application plugin to add support for building a CLI application.
+    id 'application'
+}
+
+java {                                      
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+// Versioning of dependencies
+wrapper.gradleVersion = '6.3'
+
+repositories {
+    jcenter()
+
+    mavenCentral()
+}
+
+dependencies {
+    // Use JUnit Jupiter API for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
+
+    // Use JUnit Jupiter Engine for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+
+    // Use JUnit Vintage Engine for testing
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.6.2'
+
+    // Use Cucumber for testing
+    testImplementation 'io.cucumber:cucumber-java:5.6.0'
+    testImplementation 'io.cucumber:cucumber-junit:5.6.0'
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'kingdomino.KingdominoApplication'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = 'io.cucumber.core.cli.Main'
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = ['--plugin', 'pretty', '--glue', 'kingdomino.features', 'src/test/resources/features']
+        }
+    }
+}
