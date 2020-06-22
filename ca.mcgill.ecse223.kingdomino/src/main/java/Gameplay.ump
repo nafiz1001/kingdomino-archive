@@ -1,0 +1,313 @@
+namespace ca.mcgill.ecse223.kingdomino.model;
+use GameplayPersistance.ump;
+
+/**
+* NOTE #1: You need to create a current game which includes all players, all dominos and dominos inside the pile 
+* NOTE #2: Every domino inside a pile must have DominoStatus set to InPile
+* Note #3: I'll figure this out later
+*/
+class Gameplay {
+
+    gamestatus {
+        Initializing {
+            CreatingFirstDraft {
+                entry/{shuffleDominoPile(); createNextDraft(); orderNextDraft();}
+                draftReady -> /{revealNextDraft(); generateInitialPlayerOrder();} Initializing.SelectingFirstDomino;
+            }
+            SelectingFirstDomino {
+                entry/{switchToNextPlayer();}
+                // each player must select a domino in order to create next draft
+                selectDomino() [isSelectionValid() && !isCurrentPlayerTheLastInTurn()] -> /{concludeSelection();} Initializing.SelectingFirstDomino;
+
+                // the last player selects a domino, so it will transition to CreatingNextDraft
+                selectDomino() [isSelectionValid() &&  isCurrentPlayerTheLastInTurn()] -> /{concludeSelection();} MidGame.CreatingNextDraft;
+            }
+        }
+        MidGame {
+            CreatingNextDraft {
+                // this is kind of the same as CreatingFirstDraft, difference being it sorts players differently and it transitions inside MidGame
+
+                entry/{createNextDraft(); orderNextDraft();}
+                draftReady -> /{revealNextDraft(); generateMidGamePlayerOrder();} MidGame.PlacingOrDiscardingSelectedDomino;
+            }
+            PlacingOrDiscardingSelectedDomino {
+                entry/{switchToNextPlayer();}
+
+                // domino placemant for players 1-4
+                placeDomino() [isPlacementValid() && !isCurrentTurnTheLastInGame()] -> /{concludePlacement();} MidGame.SelectingNextDomino;
+                // domino placement for players 1-3 in the last turn
+                placeDomino() [isPlacementValid() &&  isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()] -> /{concludePlacement();} MidGame.PlacingOrDiscardingSelectedDomino;
+                // domino placement for the last player in the last turn
+                placeDomino() [isPlacementValid() &&  isCurrentTurnTheLastInGame() &&  isCurrentPlayerTheLastInTurn()] -> /{concludePlacement();} EndGame.Ranking;
+
+                // domino discarding for players 1-4
+                discardDomino() [isDiscardValid() && !isCurrentTurnTheLastInGame()] -> /{concludeDiscarding();} MidGame.SelectingNextDomino;
+                // domino discarding for players 1-3 in the last turn
+                discardDomino() [isDiscardValid() &&  isCurrentTurnTheLastInGame() && !isCurrentPlayerTheLastInTurn()] -> /{concludeDiscarding();} MidGame.PlacingOrDiscardingSelectedDomino;
+                // domino discarding for the last player in the last turn
+                discardDomino() [isDiscardValid() &&  isCurrentTurnTheLastInGame() &&  isCurrentPlayerTheLastInTurn()] -> /{concludeDiscarding();} EndGame.Ranking;
+            }
+            SelectingNextDomino {
+                entry/{clearStats();}
+
+                // domino selection for players 1-3
+                selectDomino() [isSelectionValid() && !isCurrentPlayerTheLastInTurn()] -> /{concludeSelection();} MidGame.PlacingOrDiscardingSelectedDomino;
+
+                // domino selection for the last player
+                selectDomino() [isSelectionValid() &&  isCurrentPlayerTheLastInTurn()] -> /{concludeSelection();} MidGame.CreatingNextDraft;
+            }
+        }
+        EndGame {
+            Ranking {
+                // just rank players, we can figure out how to restart the game later
+                entry/{rankPlayers();}
+            }
+        }
+    }
+
+    /*
+     * Setter for test setup
+     */
+
+    public void setGamestatus(String status){
+        switch (status) {
+       	case "CreatingFirstDraft":
+       	    gamestatus = Gamestatus.Initializing;
+       	    gamestatusInitializing = GamestatusInitializing.CreatingFirstDraft;
+       	    break;
+   	    case "SelectingFirstDomino":
+       	    gamestatus = Gamestatus.Initializing;
+       	    gamestatusInitializing = GamestatusInitializing.SelectingFirstDomino;
+       	    break;
+       	case "CreatingNextDraft":
+       		gamestatus = Gamestatus.MidGame;
+       		gamestatusMidGame = GamestatusMidGame.CreatingNextDraft;
+       		break;
+       	case "SelectingNextDomino":
+       		gamestatus = Gamestatus.MidGame;
+       	    gamestatusMidGame = GamestatusMidGame.SelectingNextDomino;
+       		break;
+       		
+       	case "PlacingOrDiscardingSelectedDomino":
+       		gamestatus = Gamestatus.MidGame;
+       	    gamestatusMidGame = GamestatusMidGame.PlacingOrDiscardingSelectedDomino;
+       		break;
+       		
+    	case "EndGame":
+       		gamestatus = Gamestatus.EndGame;
+       	    gamestatusEndGame = GamestatusEndGame.Null;
+       		break;
+       		
+    	case "Ranking":
+       		gamestatus = Gamestatus.EndGame;
+       	    gamestatusEndGame = GamestatusEndGame.Ranking;
+       		break;
+       	default:
+       	    throw new RuntimeException("Invalid gamestatus string was provided: " + status);
+       	}
+    }
+
+    /*
+     * Guards
+     */
+    
+    public boolean isCurrentPlayerTheLastInTurn() {
+        Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+        return game.getCurrentPlayer() == game.getPlayer(game.getPlayers().size()-1);
+    }
+     
+    /**
+    * Note: Make sure the topDominoInPile is null when the pile is empty
+    */   
+    public boolean isCurrentTurnTheLastInGame() {
+		return count >= 48;
+    }
+
+	/**
+	* Note: Make sure the domino selected is in the next draft, not in the current draft
+	* Note: Make sure you set the value of id of class Gameplay
+	*/
+    public boolean isSelectionValid() {
+    	return helper.HelperFunctions.getdominoByID(id).getDominoSelection() == null 
+    		&& helper.HelperFunctions.getdominoByID(id).getStatus() == Domino.DominoStatus.InNextDraft;
+    }
+    
+    /**
+	* Note: Make sure you set the value of id of class Gameplay
+	*/
+    public boolean isPlacementValid() {
+    	Player player = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame().getCurrentPlayer();
+    	id = player.getDominoSelection().getDomino().getId();
+
+        Domino domino = player.getDominoSelection().getDomino();
+                
+        DominoInKingdom dik = helper.HelperFunctions.getPreplacedDominoInKingdom(player);
+        if (dik == null)
+            dik = new DominoInKingdom(x, y, player.getKingdom(), domino);
+        
+        dik.setX(x);
+        dik.setY(y);
+        dik.setDirection(helper.HelperFunctions.getDirection(dir));
+        
+        domino.setStatus(Domino.DominoStatus.ErroneouslyPreplaced);
+
+        helper.HelperFunctions.setPreplacedStatus(domino);
+        
+        dik.delete();
+        
+        return domino.getStatus() == Domino.DominoStatus.CorrectlyPreplaced;
+    }
+
+	/**
+	* Note: Make sure you set the value of id of class Gameplay
+	*/
+    public boolean isDiscardValid() {
+    	Player player = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame().getCurrentPlayer();
+    	id = player.getDominoSelection().getDomino().getId();
+        return !helper.HelperFunctions.isPlacementPossible(player.getKingdom(), id);
+    }
+       
+    /*
+     * Actions
+     */
+    
+    public void shuffleDominoPile() {
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.shuffleDominos();
+    }
+    
+    public void generateInitialPlayerOrder() {
+    	 Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+        java.util.List<Player> players = new java.util.ArrayList<>(game.getPlayers());
+        java.util.Collections.shuffle(players);
+        
+        for (int i = 0; i < players.size(); ++i) {
+			game.addOrMovePlayerAt(players.get(i), i);
+		}
+		
+		game.setCurrentPlayer(game.getPlayer(0));
+		game.setNextPlayer(game.getPlayer(0));
+    }
+    
+    public void createNextDraft() {
+        Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+        game.setCurrentDraft(game.getNextDraft());
+        game.setNextDraft(new Draft(Draft.DraftStatus.FaceDown, game));
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.setNextDraft();
+    }
+    
+    public void orderNextDraft() {
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.initiateOrderingOfNextDraft();
+    }
+    
+    public void revealNextDraft() {
+        ca.mcgill.ecse223.kingdomino.controller.KingdominoController.revealNextDraft();
+    }
+
+    public void switchToNextPlayer() {
+        ++count;
+    	if (!isCurrentPlayerTheLastInTurn()) {
+	    	clearStats();
+	        Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+	        game.setCurrentPlayer(game.getNextPlayer());
+	        
+	        for (int i = 0; i < game.getPlayers().size()-1; ++i) {
+	        	if (game.getCurrentPlayer() == game.getPlayer(i)) {
+        			game.setNextPlayer(game.getPlayer(i+1));
+        			break;
+	        	}
+	        }
+        }
+    }
+    
+    public void clearStats() {
+    	id = 0;
+        x = 0;
+        y = 0;
+        dir = null;
+    }
+
+    public void concludeSelection() {
+    	Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+    	new DominoSelection(game.getCurrentPlayer(), helper.HelperFunctions.getdominoByID(id), game.getNextDraft());
+    }
+
+    public void generateMidGamePlayerOrder() {
+        // TODO: order player based on id of selected domino
+        Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+        
+        java.util.List<Player> players = new java.util.ArrayList<>(game.getPlayers());
+        java.util.Comparator<Player> bySelectionId = 
+			(Player a, Player b)->a.getDominoSelection().getDomino().getId()-b.getDominoSelection().getDomino().getId();
+		java.util.Collections.sort(players, bySelectionId);
+		
+		for (int i = 0; i < players.size(); ++i) {
+			game.addOrMovePlayerAt(players.get(i), i);
+		}
+		
+		game.setCurrentPlayer(game.getPlayer(0));
+		game.setNextPlayer(game.getPlayer(0));
+    }
+
+    public void concludePlacement() {
+    	Player player = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame().getCurrentPlayer();
+    	ca.mcgill.ecse223.kingdomino.controller.KingdominoController.addDominoToKingdom(
+    		player.getColor().toString(),
+    		id,
+    		x,
+    		y,
+    		dir
+		);
+		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.calculatePlayerScore();
+		player.getDominoSelection().delete();
+    }
+
+    public void concludeDiscarding() {
+        Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();
+        Player player = game.getCurrentPlayer();
+        Domino domino = player.getDominoSelection().getDomino();
+        
+        domino.setStatus(Domino.DominoStatus.Discarded);
+        player.getDominoSelection().delete();
+    }
+
+    public void rankPlayers() {
+    	 
+    	ca.mcgill.ecse223.kingdomino.controller.KingdominoController.calculateRanking();
+    	
+    	Game game = ca.mcgill.ecse223.kingdomino.KingdominoApplication.getKingdomino().getCurrentGame();        
+        java.util.List<Player> players = new java.util.ArrayList<>(game.getPlayers());
+        java.util.Comparator<Player> byRanking = 
+			(Player a, Player b)->a.getCurrentRanking()-b.getCurrentRanking();
+    	java.util.Collections.sort(players, byRanking);
+    	
+    	boolean sameScore = false;
+    	int score = players.get(0).getPropertyScore();
+    	
+    	for(int index = 1; index < players.size(); index ++)
+    	{
+    		if(score == players.get(index).getPropertyScore())
+    		{
+    			sameScore = true;
+    			break;
+    		}
+    		else if (score < players.get(index).getPropertyScore())
+    		{
+    				score = players.get(index).getPropertyScore();
+    		}
+    	}
+    	 
+    	if(sameScore)
+    	{
+    		ca.mcgill.ecse223.kingdomino.controller.KingdominoController.resolveTiebreak();
+    	}
+    }
+    
+    /*
+     * Variables
+     */
+    int id = 0;
+    int x = 0;
+    int y = 0;
+    String dir = null;
+    int count = 0;
+}

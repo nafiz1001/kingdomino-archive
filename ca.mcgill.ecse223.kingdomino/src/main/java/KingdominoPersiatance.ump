@@ -1,0 +1,82 @@
+namespace ca.mcgill.ecse223.kingdomino.model;
+
+external interface Serializable {}
+class Kingdomino {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 2L;
+ 	
+ 	public void reinitialize() {
+ 		User.reinitializeUsers(this.getUsers());
+ 	}
+}
+class Game {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 3L;
+}
+class User {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 4L;
+ 	
+ 	public static void reinitializeUsers(List<User> userList)
+ 	{
+ 		usersByName = new HashMap<String, User>();
+ 		for(User user : userList)
+ 		{
+ 			usersByName.put(user.getName(), user);
+ 		}
+ 	}
+ 	
+}
+class Player {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 5L;
+}
+class Kingdom {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 6L;
+}
+class Domino {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 7L;
+}
+class KingdomTerritory {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 8L;
+}
+class DominoInKingdom {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 9L;
+}
+class Castle {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 10L;
+}
+class Draft {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 11L;
+}
+class DominoSelection {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 12L;
+}
+class Property {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 13L;
+}
+class BonusOption {
+	depend java.io.Serializable;
+  	isA Serializable;
+ 	private static final long serialVersionUID = 14L;
+}
