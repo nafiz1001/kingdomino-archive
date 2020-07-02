@@ -3,16 +3,19 @@ package kingdomino.features;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import io.cucumber.java.en.*;
+import kingdomino.KingdominoApplication;
+import kingdomino.helper.Helper;
 
 public class ShuffleDominosStepDefinitions {
     @Given("the game is initialized for shuffle dominoes")
     public void the_game_is_initialized_for_shuffle_dominoes() {
-        // TODO: Write code here that turns the phrase above into concrete actions
+        // The method assumes 4 players
+        Helper.initializeEmptyGame();
     }
 
     @Given("there are {int} players playing")
-    public void there_are_players_playing(Integer int1) {
-        // TODO: Write code here that turns the phrase above into concrete actions
+    public void there_are_players_playing(Integer numOfPlayers) {
+        // We assume that every game must have 4 players
     }
 
     @When("the shuffling of dominoes is initiated")
