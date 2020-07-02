@@ -300,5 +300,25 @@ public class Helper {
 		default:
 			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
 		}
-	}
+    }
+    
+    /**
+     * Initalizes kingdomino and current game with 4 players.
+     * Great for tesing!
+     * @author Nafiz Islam (nafiz1001)
+     * @return the current game
+     */
+    public static Game initializeEmptyGame() {
+        Kingdomino kingdomino = new Kingdomino();
+		Game game = new Game(48, kingdomino);
+		game.setNumberOfPlayers(4);
+		kingdomino.setCurrentGame(game);
+		// Populate game
+		Helper.addDefaultUsersAndPlayers(game);
+		Helper.createAllDominoes(game);
+		game.setNextPlayer(game.getPlayer(0));
+        KingdominoApplication.setKingdomino(kingdomino);
+        
+        return game;
+    }
 }
