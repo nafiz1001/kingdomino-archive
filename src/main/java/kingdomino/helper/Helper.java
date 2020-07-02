@@ -320,4 +320,8 @@ public class Helper {
         
         return game;
     }
+
+    public static Game getCurrentGame() {
+    	return KingdominoApplication.getKingdomino().getCurrentGame();
+	}
 }
