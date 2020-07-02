@@ -2,7 +2,7 @@ package kingdomino.features;
 
 import io.cucumber.java.en.*;
 
-public class CreateNextDraft {
+public class CreateNextDraftStepDefinitions {
     @Given("the game is initialized to create next draft")
     public void the_game_is_initialized_to_create_next_draft() {
         // Write code here that turns the phrase above into concrete actions
