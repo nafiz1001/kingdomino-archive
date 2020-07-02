@@ -316,7 +316,6 @@ public class Helper {
 		// Populate game
 		Helper.addDefaultUsersAndPlayers(game);
 		Helper.createAllDominoes(game);
-		game.setNextPlayer(game.getPlayer(0));
         KingdominoApplication.setKingdomino(kingdomino);
         
         return game;
