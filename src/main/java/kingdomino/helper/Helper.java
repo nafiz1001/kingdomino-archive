@@ -1,6 +1,8 @@
 package kingdomino.helper;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import kingdomino.KingdominoApplication;
 import kingdomino.model.*;
@@ -32,7 +34,29 @@ public class Helper {
     }
 
     public static void create_next_draft_is_initiated() {
-        // Write code here that turns the phrase above into concrete actions
+    	if (Helper.getCurrentGame().getTopDominoInPile() == null) {
+			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
+			Helper.getCurrentGame().setNextDraft(null);
+		} else {
+			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, Helper.getCurrentGame());
+			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
+			Helper.getCurrentGame().setNextDraft(nextDraft);
+
+			Domino[] dominos = new Domino[4];
+			for (int i = 0; i < dominos.length; ++i) {
+				Domino topDominoInPile = Helper.getCurrentGame().getTopDominoInPile();
+				dominos[i] = topDominoInPile;
+
+				topDominoInPile = topDominoInPile.getNextDomino();
+				Helper.getCurrentGame().setTopDominoInPile(topDominoInPile);
+			}
+
+			Arrays.sort(dominos, Comparator.comparingInt(Domino::getId));
+
+			for (Domino d : dominos) {
+				nextDraft.addIdSortedDomino(d);
+			}
+		}
     }
 
     public static void the_properties_of_the_player_are_identified() {
