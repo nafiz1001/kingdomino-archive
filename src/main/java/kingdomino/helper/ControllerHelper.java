@@ -1,8 +1,11 @@
 package kingdomino.helper;
 
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import kingdomino.KingdominoApplication;
 import kingdomino.model.*;
@@ -68,11 +71,20 @@ public class ControllerHelper {
     }
 
     public static void the_ordering_of_the_dominoes_in_the_next_draft_is_initiated() {
-        // Write code here that turns the phrase above into concrete actions
+		final Draft nextDraft = Helper.getCurrentGame().getNextDraft();
+		final List<Domino> dominos = new ArrayList<>(nextDraft.getIdSortedDominos());
+		dominos.sort(Comparator.comparingInt(Domino::getId));
+
+		for (Domino d : dominos)
+			nextDraft.removeIdSortedDomino(d);
+		for (Domino d : dominos)
+			nextDraft.addIdSortedDomino(d);
+
+		nextDraft.setDraftStatus(Draft.DraftStatus.Sorted);
     }
 
     public static void the_revealing_of_the_dominoes_in_the_next_draft_is_initiated() {
-        // Write code here that turns the phrase above into concrete actions
+        Helper.getCurrentGame().getNextDraft().setDraftStatus(Draft.DraftStatus.FaceUp);
     }
 
     public static void i_initiate_to_arrange_the_domino_in_the_fixed_order(String string) {
