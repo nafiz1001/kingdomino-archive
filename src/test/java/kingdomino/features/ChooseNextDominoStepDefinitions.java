@@ -3,7 +3,7 @@ package kingdomino.features;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import kingdomino.helper.ControllerHelper;
+import kingdomino.controller.KingdominoController;
 import kingdomino.helper.Helper;
 import kingdomino.model.*;
 import org.junit.Assert;
@@ -45,7 +45,7 @@ public class ChooseNextDominoStepDefinitions {
 
     @When("current player chooses to place king on {int}")
     public void current_player_chooses_to_place_king_on(Integer dominoId) {
-        ControllerHelper.current_player_chooses_to_place_king_on(dominoId);
+        KingdominoController.Helper.current_player_chooses_to_place_king_on(dominoId);
     }
 
     @Then("current player king now is on {string}")

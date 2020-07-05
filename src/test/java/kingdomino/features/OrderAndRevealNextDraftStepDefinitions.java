@@ -3,7 +3,7 @@ package kingdomino.features;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import kingdomino.helper.ControllerHelper;
+import kingdomino.controller.KingdominoController;
 import kingdomino.helper.Helper;
 import kingdomino.model.Domino;
 import kingdomino.model.Draft;
@@ -36,7 +36,7 @@ public class OrderAndRevealNextDraftStepDefinitions {
 
     @When("the ordering of the dominoes in the next draft is initiated")
     public void the_ordering_of_the_dominoes_in_the_next_draft_is_initiated() {
-        ControllerHelper.the_ordering_of_the_dominoes_in_the_next_draft_is_initiated();
+        KingdominoController.Helper.the_ordering_of_the_dominoes_in_the_next_draft_is_initiated();
     }
 
     @Then("the status of the next draft is sorted")
@@ -66,7 +66,7 @@ public class OrderAndRevealNextDraftStepDefinitions {
 
     @When("the revealing of the dominoes in the next draft is initiated")
     public void the_revealing_of_the_dominoes_in_the_next_draft_is_initiated() {
-        ControllerHelper.the_revealing_of_the_dominoes_in_the_next_draft_is_initiated();
+        KingdominoController.Helper.the_revealing_of_the_dominoes_in_the_next_draft_is_initiated();
     }
 
     @Then("the status of the next draft is face up")

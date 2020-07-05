@@ -2,7 +2,7 @@ package kingdomino.features;
 
 import io.cucumber.java.en.*;
 import kingdomino.KingdominoApplication;
-import kingdomino.helper.ControllerHelper;
+import kingdomino.controller.KingdominoController;
 import kingdomino.helper.Helper;
 import kingdomino.model.Domino;
 import kingdomino.model.Draft;
@@ -53,7 +53,7 @@ public class CreateNextDraftStepDefinitions {
     @When("create next draft is initiated")
     public void create_next_draft_is_initiated() {
         this.formerNextDraft = Helper.getCurrentGame().getNextDraft();
-        ControllerHelper.create_next_draft_is_initiated();
+        KingdominoController.Helper.create_next_draft_is_initiated();
     }
 
     @Then("a new draft is created from dominoes {string}")
