@@ -2,6 +2,7 @@ package kingdomino.features;
 
 import io.cucumber.java.en.*;
 import kingdomino.KingdominoApplication;
+import kingdomino.helper.ControllerHelper;
 import kingdomino.helper.Helper;
 import kingdomino.model.Domino;
 import kingdomino.model.Draft;
@@ -28,7 +29,7 @@ public class CreateNextDraftStepDefinitions {
     @Given("there has been {int} drafts created")
     public void there_has_been_drafts_created(Integer numOfDrafts) {
         for (int i = 0; i < numOfDrafts; ++i) {
-            Helper.create_next_draft_is_initiated();
+            ControllerHelper.create_next_draft_is_initiated();
         }
     }
 
@@ -46,7 +47,7 @@ public class CreateNextDraftStepDefinitions {
      */
     @Given("there is a next draft")
     public void there_is_a_next_draft() {
-        this.formerNextDraft = Helper.getCurrentGame().getNextDraft();
+        // this is given because of the other givens
     }
 
     @Given("the top {int} dominoes in my pile have the IDs {string}")
@@ -57,7 +58,7 @@ public class CreateNextDraftStepDefinitions {
     @When("create next draft is initiated")
     public void create_next_draft_is_initiated() {
         this.formerNextDraft = Helper.getCurrentGame().getNextDraft();
-        Helper.create_next_draft_is_initiated();
+        ControllerHelper.create_next_draft_is_initiated();
     }
 
     @Then("a new draft is created from dominoes {string}")
