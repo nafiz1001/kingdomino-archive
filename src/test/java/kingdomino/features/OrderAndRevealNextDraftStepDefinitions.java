@@ -49,14 +49,14 @@ public class OrderAndRevealNextDraftStepDefinitions {
         final List<Domino> dominos = Helper.getCurrentGame().getNextDraft().getIdSortedDominos();
         final String[] ids = orderedids.split(",");
         for (int i = 0; i < ids.length; ++i) {
-            Assert.assertEquals(String.format("Integer.parseInt(ids[%d]) == dominos.get(i).getId(%d)", i, i), Integer.parseInt(ids[i]), dominos.get(i).getId());
+            Assert.assertEquals(String.format("Integer.parseInt(ids[%d]) != dominos.get(i).getId(%d)", i, i), Integer.parseInt(ids[i]), dominos.get(i).getId());
         }
     }
 
     @Given("the game is initialized for reveal next draft of dominoes")
     public void the_game_is_initialized_for_reveal_next_draft_of_dominoes() {
         Helper.initializeEmptyGame();
-        Helper.getCurrentGame().setNextDraft(new Draft(Draft.DraftStatus.FaceDown, Helper.getCurrentGame()));
+        Helper.getCurrentGame().setNextDraft(new Draft(Draft.DraftStatus.Sorted, Helper.getCurrentGame()));
     }
 
     @Given("the dominoes in next draft are sorted")
