@@ -15,44 +15,39 @@ public class CreateNextDraftStepDefinitions {
     @Given("the game is initialized to create next draft")
     public void the_game_is_initialized_to_create_next_draft() {
         Helper.initializeEmptyGame();
-        Helper.getCurrentGame().setTopDominoInPile(Helper.getdominoByID(1));
-
-        // the cucumber feature implies that the dominos in pile are in ascending order
-        Helper.getCurrentGame().setTopDominoInPile(Helper.getdominoByID(1));
-        Domino prevDomino = Helper.getdominoByID(1);
-        for (int i = 2; i <= 48; ++i) {
-            prevDomino.setNextDomino(Helper.getdominoByID(i));
-            prevDomino = Helper.getdominoByID(i);
-        }
     }
 
     @Given("there has been {int} drafts created")
     public void there_has_been_drafts_created(Integer numOfDrafts) {
+        final Game game = Helper.getCurrentGame();
         for (int i = 0; i < numOfDrafts; ++i) {
-            ControllerHelper.create_next_draft_is_initiated();
+            game.addAllDraft(new Draft(Draft.DraftStatus.FaceUp, game));
         }
     }
 
     @Given("there is a current draft")
     public void there_is_a_current_draft() {
-        final Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-        final Draft beforeLastDraft = game.getAllDraft(game.getAllDrafts().size() - 2);
-        game.setCurrentDraft(beforeLastDraft);
+        final Game game = Helper.getCurrentGame();
+        game.setCurrentDraft(game.getAllDraft(game.getAllDrafts().size() - 2));
     }
 
-    /**
-     * This step definition is ambiguous.
-     * Am I supposed to have a next draft, or is it merely suggesting that creating the next draft must be possible?
-     * Keep in mind this is a @Given step definition, not a @Then.
-     */
     @Given("there is a next draft")
     public void there_is_a_next_draft() {
-        // this is given because of the other givens
+        final Game game = Helper.getCurrentGame();
+        game.setNextDraft(game.getAllDraft(game.getAllDrafts().size() - 1));
     }
 
     @Given("the top {int} dominoes in my pile have the IDs {string}")
     public void the_top_dominoes_in_my_pile_have_the_IDs(Integer int1, String list_of_ids) {
-        // this is given because of the other givens
+        final String[] ids = list_of_ids.split(",");
+
+        Domino currDomino = Helper.getdominoByID(Integer.parseInt(ids[0]));
+        Helper.getCurrentGame().setTopDominoInPile(currDomino);
+        for (int i = 1; i < ids.length; ++i) {
+            final Domino nextDomino = Helper.getdominoByID(Integer.parseInt(ids[i]));
+            currDomino.setNextDomino(nextDomino);
+            currDomino = nextDomino;
+        }
     }
 
     @When("create next draft is initiated")
@@ -78,12 +73,12 @@ public class CreateNextDraftStepDefinitions {
 
     @Then("the dominoes in the next draft are face down")
     public void the_dominoes_in_the_next_draft_are_face_down() {
-        Assert.assertEquals(Draft.DraftStatus.FaceDown, KingdominoApplication.getKingdomino().getCurrentGame().getNextDraft().getDraftStatus());
+        Assert.assertEquals(Draft.DraftStatus.FaceDown, Helper.getCurrentGame().getNextDraft().getDraftStatus());
     }
 
     @Then("the top domino of the pile is ID {int}")
     public void the_top_domino_of_the_pile_is_ID(Integer topId) {
-        Assert.assertEquals(topId.intValue(), KingdominoApplication.getKingdomino().getCurrentGame().getTopDominoInPile().getId());
+        Assert.assertEquals(topId.intValue(), Helper.getCurrentGame().getTopDominoInPile().getId());
     }
 
     @Then("the former next draft is now the current draft")
@@ -93,6 +88,7 @@ public class CreateNextDraftStepDefinitions {
 
     @Given("this is a {int} player game")
     public void this_is_a_player_game(Integer num_players) {
+        // we will assume there is always 4 players
         Helper.getCurrentGame().setNumberOfPlayers(num_players);
     }
 

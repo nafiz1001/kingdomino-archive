@@ -29,21 +29,22 @@ public class ControllerHelper {
     }
 
     public static void create_next_draft_is_initiated() {
-    	if (Helper.getCurrentGame().getTopDominoInPile() == null) {
-			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
-			Helper.getCurrentGame().setNextDraft(null);
+    	final Game game = Helper.getCurrentGame();
+    	if (game.getTopDominoInPile() == null) {
+			game.setCurrentDraft(game.getNextDraft());
+			game.setNextDraft(null);
 		} else {
-			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, Helper.getCurrentGame());
-			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
-			Helper.getCurrentGame().setNextDraft(nextDraft);
+			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, game);
+			game.setCurrentDraft(game.getNextDraft());
+			game.setNextDraft(nextDraft);
 
 			Domino[] dominos = new Domino[4];
 			for (int i = 0; i < dominos.length; ++i) {
-				Domino topDominoInPile = Helper.getCurrentGame().getTopDominoInPile();
+				Domino topDominoInPile = game.getTopDominoInPile();
 				dominos[i] = topDominoInPile;
 
 				topDominoInPile = topDominoInPile.getNextDomino();
-				Helper.getCurrentGame().setTopDominoInPile(topDominoInPile);
+				game.setTopDominoInPile(topDominoInPile);
 			}
 
 			Arrays.sort(dominos, Comparator.comparingInt(Domino::getId));
