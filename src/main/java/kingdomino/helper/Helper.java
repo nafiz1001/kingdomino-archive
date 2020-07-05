@@ -133,4 +133,14 @@ public class Helper {
     public static Game getCurrentGame() {
         return KingdominoApplication.getKingdomino().getCurrentGame();
     }
+
+    public static Player findPlayer(Player.PlayerColor color) {
+        for (Player p : Helper.getCurrentGame().getPlayers()) {
+            if (p.getColor().equals(color)) {
+                return p;
+            }
+        }
+
+        return null;
+    }
 }
