@@ -1,5 +1,5 @@
 /*PLEASE DO NOT EDIT THIS CODE*/
-/*This code was generated using the UMPLE 1.29.1.4823.43e750332 modeling language!*/
+/*This code was generated using the UMPLE 1.29.1.4971.0d5d5f222 modeling language!*/
 
 package kingdomino.model;
 import java.util.*;
@@ -21,6 +21,7 @@ public class Game
   private List<Domino> allDominos;
   private List<Draft> allDrafts;
   private Player nextPlayer;
+  private Player currentPlayer;
   private Draft currentDraft;
   private Draft nextDraft;
   private Domino topDominoInPile;
@@ -172,6 +173,17 @@ public class Game
   public boolean hasNextPlayer()
   {
     boolean has = nextPlayer != null;
+    return has;
+  }
+  /* Code from template association_GetOne */
+  public Player getCurrentPlayer()
+  {
+    return currentPlayer;
+  }
+
+  public boolean hasCurrentPlayer()
+  {
+    boolean has = currentPlayer != null;
     return has;
   }
   /* Code from template association_GetOne */
@@ -484,6 +496,14 @@ public class Game
     return wasSet;
   }
   /* Code from template association_SetUnidirectionalOptionalOne */
+  public boolean setCurrentPlayer(Player aNewCurrentPlayer)
+  {
+    boolean wasSet = false;
+    currentPlayer = aNewCurrentPlayer;
+    wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_SetUnidirectionalOptionalOne */
   public boolean setCurrentDraft(Draft aNewCurrentDraft)
   {
     boolean wasSet = false;
@@ -608,6 +628,7 @@ public class Game
     }
     
     nextPlayer = null;
+    currentPlayer = null;
     currentDraft = null;
     nextDraft = null;
     topDominoInPile = null;
@@ -627,6 +648,7 @@ public class Game
             "numberOfPlayers" + ":" + getNumberOfPlayers()+ "," +
             "maxPileSize" + ":" + getMaxPileSize()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "nextPlayer = "+(getNextPlayer()!=null?Integer.toHexString(System.identityHashCode(getNextPlayer())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "currentPlayer = "+(getCurrentPlayer()!=null?Integer.toHexString(System.identityHashCode(getCurrentPlayer())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "currentDraft = "+(getCurrentDraft()!=null?Integer.toHexString(System.identityHashCode(getCurrentDraft())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "nextDraft = "+(getNextDraft()!=null?Integer.toHexString(System.identityHashCode(getNextDraft())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "topDominoInPile = "+(getTopDominoInPile()!=null?Integer.toHexString(System.identityHashCode(getTopDominoInPile())):"null") + System.getProperties().getProperty("line.separator") +

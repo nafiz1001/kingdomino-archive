@@ -16,6 +16,7 @@ class Game {
 	1 <@>- 0..* Domino allDominos; // sorted by Ids of dominos
 	1 <@>- 0..* Draft allDrafts; // sorted by Ids of dominos
 	0..1 -> 0..1 Player nextPlayer;
+	0..1 -> 0..1 Player currentPlayer;
 	0..1 -> 0..1 Draft currentDraft;
 	0..1 -> 0..1 Draft nextDraft;
 	0..1 -> 0..1 Domino topDominoInPile;	
