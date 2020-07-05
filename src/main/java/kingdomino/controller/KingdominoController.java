@@ -1,12 +1,12 @@
 package kingdomino.controller;
 
-import kingdomino.helper.Helper;
 import kingdomino.model.Domino;
 import kingdomino.model.DominoSelection;
 import kingdomino.model.Draft;
 import kingdomino.model.Game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -212,7 +212,13 @@ public class KingdominoController {
         }
 
         public static void the_shuffling_of_dominoes_is_initiated() {
-            // Write code here that turns the phrase above into concrete actions
+            List<Domino> dominos = new ArrayList<>(kingdomino.helper.Helper.getCurrentGame().getAllDominos());
+            Collections.shuffle(dominos);
+
+            kingdomino.helper.Helper.getCurrentGame().setTopDominoInPile(dominos.get(0));
+            for (int i = 0; i < dominos.size() - 1; ++i) {
+                dominos.get(i).setNextDomino(dominos.get(i + 1));
+            }
         }
 
         public static void starting_a_new_game_is_initiated() {
