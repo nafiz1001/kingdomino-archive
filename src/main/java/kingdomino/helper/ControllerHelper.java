@@ -137,8 +137,13 @@ public class ControllerHelper {
 		// Write code here that turns the phrase above into concrete actions
 	}
 
-	public static void current_player_chooses_to_place_king_on(Integer int1) {
-		// Write code here that turns the phrase above into concrete actions
+	public static void current_player_chooses_to_place_king_on(Integer dominoId) {
+    	final Domino domino = Helper.getdominoByID(dominoId);
+		if (domino.getDominoSelection() == null) {
+			if (Helper.getCurrentGame().getNextDraft().getIdSortedDominos().contains(domino)) {
+				new DominoSelection(Helper.getCurrentGame().getCurrentPlayer(), domino, Helper.getCurrentGame().getNextDraft());
+			}
+		}
 	}
 
 	public static void start_of_the_game_is_initiated() {
