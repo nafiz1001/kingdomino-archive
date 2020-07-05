@@ -10,12 +10,7 @@ import kingdomino.model.Domino.DominoStatus;
 import kingdomino.model.DominoInKingdom.DirectionKind;
 import kingdomino.model.Player.PlayerColor;
 
-public class Helper {
-    
-    //*********************************************************************/
-    //  Add method for representing @When here 
-    // (if it's not provided here and if it's not a controller method)
-    //*********************************************************************/
+public class ControllerHelper {
     
     public static void calculate_bonus_score_is_initiated() {
         // Write code here that turns the phrase above into concrete actions
@@ -34,21 +29,21 @@ public class Helper {
     }
 
     public static void create_next_draft_is_initiated() {
-    	if (Helper.getCurrentGame().getTopDominoInPile() == null) {
-			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
-			Helper.getCurrentGame().setNextDraft(null);
+    	if (ControllerHelper.getCurrentGame().getTopDominoInPile() == null) {
+			ControllerHelper.getCurrentGame().setCurrentDraft(ControllerHelper.getCurrentGame().getNextDraft());
+			ControllerHelper.getCurrentGame().setNextDraft(null);
 		} else {
-			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, Helper.getCurrentGame());
-			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
-			Helper.getCurrentGame().setNextDraft(nextDraft);
+			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, ControllerHelper.getCurrentGame());
+			ControllerHelper.getCurrentGame().setCurrentDraft(ControllerHelper.getCurrentGame().getNextDraft());
+			ControllerHelper.getCurrentGame().setNextDraft(nextDraft);
 
 			Domino[] dominos = new Domino[4];
 			for (int i = 0; i < dominos.length; ++i) {
-				Domino topDominoInPile = Helper.getCurrentGame().getTopDominoInPile();
+				Domino topDominoInPile = ControllerHelper.getCurrentGame().getTopDominoInPile();
 				dominos[i] = topDominoInPile;
 
 				topDominoInPile = topDominoInPile.getNextDomino();
-				Helper.getCurrentGame().setTopDominoInPile(topDominoInPile);
+				ControllerHelper.getCurrentGame().setTopDominoInPile(topDominoInPile);
 			}
 
 			Arrays.sort(dominos, Comparator.comparingInt(Domino::getId));
@@ -110,118 +105,106 @@ public class Helper {
     public static void check_current_preplaced_domino_overlapping_is_initiated() {
         // Write code here that turns the phrase above into concrete actions
     }
-
-    public static class Controller {
         
-        //*********************************************************************/
-        //  Add method for representing @When here if it's a controller method 
-        // (and if it's not provided here)
-        //*********************************************************************/
-        
-        public static void i_initiate_the_browsing_of_all_dominoes() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void i_provide_a_domino_ID(Integer int1) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void i_initiate_the_browsing_of_all_dominoes_of_terrain_type(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
+	public static void i_initiate_the_browsing_of_all_dominoes() {
+		// Write code here that turns the phrase above into concrete actions
+	}
 
-        public static void the_current_player_places_his_her_domino() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_current_player_discards_his_her_domino() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void current_player_chooses_to_place_king_on(Integer int1) {
-            // Write code here that turns the phrase above into concrete actions
-        }
+	public static void i_provide_a_domino_ID(Integer int1) {
+		// Write code here that turns the phrase above into concrete actions
+	}
 
-        public static void start_of_the_game_is_initiated() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void i_initiate_loading_a_saved_game_from(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
+	public static void i_initiate_the_browsing_of_all_dominoes_of_terrain_type(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
 
-        public static void removes_his_king_from_the_domino(String string, Integer int1) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void requests_to_move_the_domino(String string, String string2) {
-            // Write code here that turns the phrase above into concrete actions
-        }
+	public static void the_current_player_places_his_her_domino() {
+		// Write code here that turns the phrase above into concrete actions
+	}
 
-        public static void requests_to_place_the_selected_domino(String string, Integer int1) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void i_provide_my_username_and_initiate_creating_a_new_user(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void i_initiate_the_browsing_of_all_users() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void i_initiate_querying_the_game_statistics_for_a_user(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void requests_to_rotate_the_domino_with(String string, String string2) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_user_initiates_saving_the_game_to_a_file_named(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_user_agrees_to_overwrite_the_existing_file_named(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_player_completes_his_her_domino_selection(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_player_completes_his_her_domino_selection_of_the_game(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void set_game_options_is_initiated() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_number_of_players_is_set_to(Integer int1) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void harmony_selected_as_bonus_option(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void middle_Kingdom_selected_as_bonus_option(String string) {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    
-        public static void the_shuffling_of_dominoes_is_initiated() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-        
-        public static void starting_a_new_game_is_initiated() {
-            // Write code here that turns the phrase above into concrete actions
-        }
-    }
-    
-    //*********************************************************************/
-    //  Everything else
-    //*********************************************************************/
+	public static void the_current_player_discards_his_her_domino() {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void current_player_chooses_to_place_king_on(Integer int1) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void start_of_the_game_is_initiated() {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void i_initiate_loading_a_saved_game_from(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void removes_his_king_from_the_domino(String string, Integer int1) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void requests_to_move_the_domino(String string, String string2) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void requests_to_place_the_selected_domino(String string, Integer int1) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void i_provide_my_username_and_initiate_creating_a_new_user(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void i_initiate_the_browsing_of_all_users() {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void i_initiate_querying_the_game_statistics_for_a_user(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void requests_to_rotate_the_domino_with(String string, String string2) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void the_user_initiates_saving_the_game_to_a_file_named(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void the_user_agrees_to_overwrite_the_existing_file_named(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void the_player_completes_his_her_domino_selection(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void the_player_completes_his_her_domino_selection_of_the_game(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void set_game_options_is_initiated() {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void the_number_of_players_is_set_to(Integer int1) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void harmony_selected_as_bonus_option(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void middle_Kingdom_selected_as_bonus_option(String string) {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void the_shuffling_of_dominoes_is_initiated() {
+		// Write code here that turns the phrase above into concrete actions
+	}
+
+	public static void starting_a_new_game_is_initiated() {
+		// Write code here that turns the phrase above into concrete actions
+	}
 
     public static void addDefaultUsersAndPlayers(Game game) {
 		String[] userNames = { "User1", "User2", "User3", "User4" };
@@ -338,8 +321,8 @@ public class Helper {
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
 		// Populate game
-		Helper.addDefaultUsersAndPlayers(game);
-		Helper.createAllDominoes(game);
+		ControllerHelper.addDefaultUsersAndPlayers(game);
+		ControllerHelper.createAllDominoes(game);
         KingdominoApplication.setKingdomino(kingdomino);
         
         return game;

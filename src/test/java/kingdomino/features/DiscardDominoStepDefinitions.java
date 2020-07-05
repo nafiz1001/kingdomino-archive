@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import kingdomino.KingdominoApplication;
-import kingdomino.helper.Helper;
+import kingdomino.helper.ControllerHelper;
 import kingdomino.model.*;
 import kingdomino.model.Domino.DominoStatus;
 import kingdomino.model.DominoInKingdom.DirectionKind;
@@ -27,8 +27,8 @@ public class DiscardDominoStepDefinitions {
 		game.setNumberOfPlayers(4);
 		kingdomino.setCurrentGame(game);
 		// Populate game
-		Helper.addDefaultUsersAndPlayers(game);
-		Helper.createAllDominoes(game);
+		ControllerHelper.addDefaultUsersAndPlayers(game);
+		ControllerHelper.createAllDominoes(game);
 		game.setNextPlayer(game.getPlayer(0));
 		KingdominoApplication.setKingdomino(kingdomino);
 	}
@@ -40,12 +40,12 @@ public class DiscardDominoStepDefinitions {
 		for (Map<String, String> map : valueMaps) {
 			// Get values from cucumber table
 			Integer id = Integer.decode(map.get("id"));
-			DirectionKind dir = Helper.getDirection(map.get("dominodir"));
+			DirectionKind dir = ControllerHelper.getDirection(map.get("dominodir"));
 			Integer posx = Integer.decode(map.get("posx"));
 			Integer posy = Integer.decode(map.get("posy"));
 
 			// Add the domino to a player's kingdom
-			Domino dominoToPlace = Helper.getdominoByID(id);
+			Domino dominoToPlace = ControllerHelper.getdominoByID(id);
 			Kingdom kingdom = game.getPlayer(0).getKingdom();
 			DominoInKingdom domInKingdom = new DominoInKingdom(posx, posy, kingdom, dominoToPlace);
 			domInKingdom.setDirection(dir);
@@ -76,8 +76,8 @@ public class DiscardDominoStepDefinitions {
 
 	@Then("domino {int} shall have status {string}")
 	public void domino_shall_have_status(Integer domID, String domStatus) {
-		DominoStatus actualStatus = Helper.getdominoByID(domID).getStatus();
-		DominoStatus expectedStatus = Helper.getDominoStatus(domStatus);
+		DominoStatus actualStatus = ControllerHelper.getdominoByID(domID).getStatus();
+		DominoStatus expectedStatus = ControllerHelper.getDominoStatus(domStatus);
 		assertEquals(expectedStatus, actualStatus);
 	}
 }
