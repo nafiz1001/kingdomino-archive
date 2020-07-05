@@ -50,8 +50,6 @@ public class ControllerHelper {
 				game.setTopDominoInPile(topDominoInPile);
 			}
 
-			Arrays.sort(dominos, Comparator.comparingInt(Domino::getId));
-
 			for (Domino d : dominos) {
 				nextDraft.addIdSortedDomino(d);
 			}
