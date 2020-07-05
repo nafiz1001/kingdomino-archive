@@ -3,6 +3,7 @@ package kingdomino.features;
 import io.cucumber.java.en.*;
 import kingdomino.KingdominoApplication;
 import kingdomino.helper.ControllerHelper;
+import kingdomino.helper.Helper;
 import kingdomino.model.Domino;
 import kingdomino.model.Draft;
 import kingdomino.model.Game;
@@ -13,15 +14,15 @@ public class CreateNextDraftStepDefinitions {
 
     @Given("the game is initialized to create next draft")
     public void the_game_is_initialized_to_create_next_draft() {
-        ControllerHelper.initializeEmptyGame();
-        ControllerHelper.getCurrentGame().setTopDominoInPile(ControllerHelper.getdominoByID(1));
+        Helper.initializeEmptyGame();
+        Helper.getCurrentGame().setTopDominoInPile(Helper.getdominoByID(1));
 
         // the cucumber feature implies that the dominos in pile are in ascending order
-        ControllerHelper.getCurrentGame().setTopDominoInPile(ControllerHelper.getdominoByID(1));
-        Domino prevDomino = ControllerHelper.getdominoByID(1);
+        Helper.getCurrentGame().setTopDominoInPile(Helper.getdominoByID(1));
+        Domino prevDomino = Helper.getdominoByID(1);
         for (int i = 2; i <= 48; ++i) {
-            prevDomino.setNextDomino(ControllerHelper.getdominoByID(i));
-            prevDomino = ControllerHelper.getdominoByID(i);
+            prevDomino.setNextDomino(Helper.getdominoByID(i));
+            prevDomino = Helper.getdominoByID(i);
         }
     }
 
@@ -46,7 +47,7 @@ public class CreateNextDraftStepDefinitions {
      */
     @Given("there is a next draft")
     public void there_is_a_next_draft() {
-        this.formerNextDraft = ControllerHelper.getCurrentGame().getNextDraft();
+        // this is given because of the other givens
     }
 
     @Given("the top {int} dominoes in my pile have the IDs {string}")
@@ -56,7 +57,7 @@ public class CreateNextDraftStepDefinitions {
 
     @When("create next draft is initiated")
     public void create_next_draft_is_initiated() {
-        this.formerNextDraft = ControllerHelper.getCurrentGame().getNextDraft();
+        this.formerNextDraft = Helper.getCurrentGame().getNextDraft();
         ControllerHelper.create_next_draft_is_initiated();
     }
 
@@ -87,21 +88,21 @@ public class CreateNextDraftStepDefinitions {
 
     @Then("the former next draft is now the current draft")
     public void the_former_next_draft_is_now_the_current_draft() {
-        Assert.assertEquals(this.formerNextDraft, ControllerHelper.getCurrentGame().getCurrentDraft());
+        Assert.assertEquals(this.formerNextDraft, Helper.getCurrentGame().getCurrentDraft());
     }
 
     @Given("this is a {int} player game")
     public void this_is_a_player_game(Integer num_players) {
-        ControllerHelper.getCurrentGame().setNumberOfPlayers(num_players);
+        Helper.getCurrentGame().setNumberOfPlayers(num_players);
     }
 
     @Then("the pile is empty")
     public void the_pile_is_empty() {
-        Assert.assertNull(ControllerHelper.getCurrentGame().getTopDominoInPile());
+        Assert.assertNull(Helper.getCurrentGame().getTopDominoInPile());
     }
 
     @Then("there is no next draft")
     public void there_is_no_next_draft() {
-        Assert.assertNull(ControllerHelper.getCurrentGame().getNextDraft());
+        Assert.assertNull(Helper.getCurrentGame().getNextDraft());
     }
 }

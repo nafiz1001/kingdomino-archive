@@ -29,21 +29,21 @@ public class ControllerHelper {
     }
 
     public static void create_next_draft_is_initiated() {
-    	if (ControllerHelper.getCurrentGame().getTopDominoInPile() == null) {
-			ControllerHelper.getCurrentGame().setCurrentDraft(ControllerHelper.getCurrentGame().getNextDraft());
-			ControllerHelper.getCurrentGame().setNextDraft(null);
+    	if (Helper.getCurrentGame().getTopDominoInPile() == null) {
+			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
+			Helper.getCurrentGame().setNextDraft(null);
 		} else {
-			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, ControllerHelper.getCurrentGame());
-			ControllerHelper.getCurrentGame().setCurrentDraft(ControllerHelper.getCurrentGame().getNextDraft());
-			ControllerHelper.getCurrentGame().setNextDraft(nextDraft);
+			final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, Helper.getCurrentGame());
+			Helper.getCurrentGame().setCurrentDraft(Helper.getCurrentGame().getNextDraft());
+			Helper.getCurrentGame().setNextDraft(nextDraft);
 
 			Domino[] dominos = new Domino[4];
 			for (int i = 0; i < dominos.length; ++i) {
-				Domino topDominoInPile = ControllerHelper.getCurrentGame().getTopDominoInPile();
+				Domino topDominoInPile = Helper.getCurrentGame().getTopDominoInPile();
 				dominos[i] = topDominoInPile;
 
 				topDominoInPile = topDominoInPile.getNextDomino();
-				ControllerHelper.getCurrentGame().setTopDominoInPile(topDominoInPile);
+				Helper.getCurrentGame().setTopDominoInPile(topDominoInPile);
 			}
 
 			Arrays.sort(dominos, Comparator.comparingInt(Domino::getId));
@@ -204,131 +204,5 @@ public class ControllerHelper {
 
 	public static void starting_a_new_game_is_initiated() {
 		// Write code here that turns the phrase above into concrete actions
-	}
-
-    public static void addDefaultUsersAndPlayers(Game game) {
-		String[] userNames = { "User1", "User2", "User3", "User4" };
-		for (int i = 0; i < userNames.length; i++) {
-			User user = game.getKingdomino().addUser(userNames[i]);
-			Player player = new Player(game);
-			player.setUser(user);
-			player.setColor(PlayerColor.values()[i]);
-			Kingdom kingdom = new Kingdom(player);
-			new Castle(0, 0, kingdom, player);
-		}
-	}
-
-	public static void createAllDominoes(Game game) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("src/main/resources/alldominoes.dat"));
-			String line = "";
-			String delimiters = "[:\\+()]";
-			while ((line = br.readLine()) != null) {
-				String[] dominoString = line.split(delimiters); // {id, leftTerrain, rightTerrain, crowns}
-				int dominoId = Integer.decode(dominoString[0]);
-				TerrainType leftTerrain = getTerrainType(dominoString[1]);
-				TerrainType rightTerrain = getTerrainType(dominoString[2]);
-				int numCrown = 0;
-				if (dominoString.length > 3) {
-					numCrown = Integer.decode(dominoString[3]);
-				}
-				new Domino(dominoId, leftTerrain, rightTerrain, numCrown, game);
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new java.lang.IllegalArgumentException(
-					"Error occured while trying to read alldominoes.dat: " + e.getMessage());
-		}
-	}
-
-	public static Domino getdominoByID(int id) {
-		Game game = KingdominoApplication.getKingdomino().getCurrentGame();
-		for (Domino domino : game.getAllDominos()) {
-			if (domino.getId() == id) {
-				return domino;
-			}
-		}
-		throw new java.lang.IllegalArgumentException("Domino with ID " + id + " not found.");
-	}
-
-	public static TerrainType getTerrainType(String terrain) {
-		switch (terrain) {
-		case "W":
-			return TerrainType.WheatField;
-		case "F":
-			return TerrainType.Forest;
-		case "M":
-			return TerrainType.Mountain;
-		case "G":
-			return TerrainType.Grass;
-		case "S":
-			return TerrainType.Swamp;
-		case "L":
-			return TerrainType.Lake;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid terrain type: " + terrain);
-		}
-	}
-
-	public static DirectionKind getDirection(String dir) {
-		switch (dir) {
-		case "up":
-			return DirectionKind.Up;
-		case "down":
-			return DirectionKind.Down;
-		case "left":
-			return DirectionKind.Left;
-		case "right":
-			return DirectionKind.Right;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid direction: " + dir);
-		}
-	}
-
-	public static DominoStatus getDominoStatus(String status) {
-		switch (status) {
-		case "inPile":
-			return DominoStatus.InPile;
-		case "excluded":
-			return DominoStatus.Excluded;
-		case "inCurrentDraft":
-			return DominoStatus.InCurrentDraft;
-		case "inNextDraft":
-			return DominoStatus.InNextDraft;
-		case "erroneouslyPreplaced":
-			return DominoStatus.ErroneouslyPreplaced;
-		case "correctlyPreplaced":
-			return DominoStatus.CorrectlyPreplaced;
-		case "placedInKingdom":
-			return DominoStatus.PlacedInKingdom;
-		case "discarded":
-			return DominoStatus.Discarded;
-		default:
-			throw new java.lang.IllegalArgumentException("Invalid domino status: " + status);
-		}
-    }
-    
-    /**
-     * Initalizes kingdomino and current game with 4 players.
-     * Great for tesing!
-     * @author Nafiz Islam (nafiz1001)
-     * @return the current game
-     */
-    public static Game initializeEmptyGame() {
-        Kingdomino kingdomino = new Kingdomino();
-		Game game = new Game(48, kingdomino);
-		game.setNumberOfPlayers(4);
-		kingdomino.setCurrentGame(game);
-		// Populate game
-		ControllerHelper.addDefaultUsersAndPlayers(game);
-		ControllerHelper.createAllDominoes(game);
-        KingdominoApplication.setKingdomino(kingdomino);
-        
-        return game;
-    }
-
-    public static Game getCurrentGame() {
-    	return KingdominoApplication.getKingdomino().getCurrentGame();
 	}
 }
