@@ -28,29 +28,24 @@ public class KingdominoController {
             // Write code here that turns the phrase above into concrete actions
         }
 
-        public static void create_next_draft_is_initiated() {
+        public static boolean create_next_draft_is_initiated() {
             final Game game = kingdomino.helper.Helper.getCurrentGame();
-            if (game.getTopDominoInPile() == null) {
-                game.setCurrentDraft(game.getNextDraft());
-                game.setNextDraft(null);
-            } else {
+            if (game.getTopDominoInPile() != null) {
                 final Draft nextDraft = new Draft(Draft.DraftStatus.FaceDown, game);
                 game.setCurrentDraft(game.getNextDraft());
                 game.setNextDraft(nextDraft);
 
-                Domino[] dominos = new Domino[4];
-                for (int i = 0; i < dominos.length; ++i) {
+                for (int i = 0; i < 4; ++i) {
                     Domino topDominoInPile = game.getTopDominoInPile();
-                    dominos[i] = topDominoInPile;
-
+                    nextDraft.addIdSortedDomino(topDominoInPile);
                     topDominoInPile = topDominoInPile.getNextDomino();
                     game.setTopDominoInPile(topDominoInPile);
                 }
 
-                for (Domino d : dominos) {
-                    nextDraft.addIdSortedDomino(d);
-                }
+                return true;
             }
+
+            return false;
         }
 
         public static void the_properties_of_the_player_are_identified() {
