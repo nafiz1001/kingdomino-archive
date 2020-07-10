@@ -1,9 +1,7 @@
 package kingdomino.controller;
 
-import kingdomino.model.Domino;
-import kingdomino.model.DominoSelection;
-import kingdomino.model.Draft;
-import kingdomino.model.Game;
+import kingdomino.KingdominoApplication;
+import kingdomino.model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -158,16 +156,43 @@ public class KingdominoController {
             // Write code here that turns the phrase above into concrete actions
         }
 
-        public static void i_provide_my_username_and_initiate_creating_a_new_user(String string) {
-            // Write code here that turns the phrase above into concrete actions
+        public static boolean i_provide_my_username_and_initiate_creating_a_new_user(String name) {
+            if (name.isEmpty())
+                return false;
+
+            for (Character c : name.toCharArray())
+                if (!(Character.isAlphabetic(c) || Character.isDigit(c)))
+                    return false;
+
+            for (User u : KingdominoApplication.getKingdomino().getUsers()) {
+                if (u.getName().equalsIgnoreCase(name)) {
+                    return false;
+                }
+            }
+
+            KingdominoApplication.getKingdomino().addUser(name);
+            return true;
         }
 
-        public static void i_initiate_the_browsing_of_all_users() {
-            // Write code here that turns the phrase above into concrete actions
+        public static List<User> i_initiate_the_browsing_of_all_users() {
+            ArrayList<User> users = new ArrayList<>(KingdominoApplication.getKingdomino().getUsers());
+            users.sort(Comparator.comparing(User::getName));
+            return users;
         }
 
-        public static void i_initiate_querying_the_game_statistics_for_a_user(String string) {
-            // Write code here that turns the phrase above into concrete actions
+        public static User i_initiate_querying_the_game_statistics_for_a_user(String name) {
+            int index = 0;
+            for (User u : KingdominoApplication.getKingdomino().getUsers()) {
+                if (u.getName().equalsIgnoreCase(name)) {
+                    break;
+                }
+                ++index;
+            }
+
+            if (index == KingdominoApplication.getKingdomino().getUsers().size())
+                return null;
+            else
+                return KingdominoApplication.getKingdomino().getUser(index);
         }
 
         public static void requests_to_rotate_the_domino_with(String string, String string2) {
